@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'screens/products_overview_screen.dart';
+import 'screens/product_detail_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,11 +14,18 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'CarsShop',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.red, // Aplica el color rojo.
+          foregroundColor:
+              Colors.white, // Asegúrate de que el texto sea visible.
+          elevation: 4,
+        ),
       ),
       initialRoute: HomeScreen.routName,
       routes: {
         HomeScreen.routName: (ctx) => HomeScreen(),
+        ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
+        ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
       },
     );
   }
