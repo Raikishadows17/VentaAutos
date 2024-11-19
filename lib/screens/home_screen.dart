@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:storescars/screens/products_overview_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routName = 'Home-Screen';
+
+  selectProductsOverview(BuildContext context) {
+    Navigator.of(context).pushNamed(ProductsOverviewScreen.routeName);
+  }
+
   final background = Container(
     decoration: const BoxDecoration(
         image: DecorationImage(
@@ -48,14 +54,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Press me',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    onPressed: () => selectProductsOverview(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       shadowColor: Colors.black,
+                    ),
+                    child: const Text(
+                      'Press me',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
