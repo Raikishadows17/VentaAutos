@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:storescars/providers/products.dart';
 import 'package:storescars/screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:storescars/providers/product.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl01;
-  final String price;
-
-  const ProductItem(this.id, this.title, this.imageUrl01, this.price,
-      {super.key});
-
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context, listen: false);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -19,11 +16,11 @@ class ProductItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context).pushNamed(
               ProductDetailScreen.routeName,
-              arguments: id,
+              arguments: product.id,
             );
           },
           child: Image.network(
-            imageUrl01,
+            product.imageUrl01,
             fit: BoxFit.cover,
           ),
         ),
@@ -31,12 +28,18 @@ class ProductItem extends StatelessWidget {
           height: 45,
           child: GridTileBar(
             backgroundColor: Colors.black54,
-            leading: IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {},
+            leading: Consumer<Product>(
+              builder: (ctx, product, _) => IconButton(
+                icon: Icon(product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                onPressed: () {
+                  product.toggleFavoriteStatus();
+                },
+              ),
             ),
             title: Text(
-              title,
+              product.title,
               style: TextStyle(fontSize: 15),
               softWrap: true,
               overflow: TextOverflow.fade,
@@ -46,7 +49,7 @@ class ProductItem extends StatelessWidget {
               children: <Widget>[
                 Icon(Icons.attach_money),
                 Text(
-                  price,
+                  product.price,
                   style: TextStyle(color: Colors.white),
                 ),
               ],
