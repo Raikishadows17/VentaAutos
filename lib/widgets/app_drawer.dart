@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:storescars/screens/products_overview_screen.dart';
 import 'package:storescars/screens/nosotros_screen.dart';
+import 'package:storescars/screens/user_products_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -36,6 +37,17 @@ class AppDrawer extends StatelessWidget {
                 title: Text('Nosotros'),
                 onTap: () {
                   Navigator.of(context).pushNamed(NosotrosScreen.routeName);
+                },
+              ),
+            ),
+            Divider(),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Icon(Icons.edit),
+                title: Text('Products Manager'),
+                onTap: () {
+                  Navigator.of(context).pushNamed(UserProductsScreen.routeName);
                 },
               ),
             ),
