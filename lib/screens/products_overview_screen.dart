@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storescars/providers/product.dart';
-import 'package:storescars/widgets/product_grid.dart';
+import 'package:storescars/widgets/products_grid.dart';
 import 'package:storescars/widgets/app_drawer.dart';
 
 enum FilterOptions { Favorites, All }

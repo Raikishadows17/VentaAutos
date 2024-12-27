@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:storescars/providers/products.dart';
 import 'package:storescars/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:storescars/providers/product.dart';
