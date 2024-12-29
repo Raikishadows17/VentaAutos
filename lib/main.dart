@@ -6,6 +6,7 @@ import 'providers/products.dart';
 import 'package:provider/provider.dart';
 import 'screens/nosotros_screen.dart';
 import 'screens/user_products_screen.dart';
+import 'screens/edit_products_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           NosotrosScreen.routeName: (ctx) => NosotrosScreen(),
           UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+          EditProductsScreen.routeName: (ctx) => const EditProductsScreen(),
         },
       ),
     );
