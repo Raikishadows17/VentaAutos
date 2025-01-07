@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:storescars/screens/edit_products_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:storescars/providers/products.dart';
 
 class UserProductItem extends StatelessWidget {
+  final String id;
   final String title;
   final String imageUrl01;
 
-  UserProductItem(this.title, this.imageUrl01);
+  UserProductItem(this.id, this.title, this.imageUrl01);
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +26,18 @@ class UserProductItem extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(EditProductsScreen.routeName, arguments: id);
+              },
               color: Theme.of(context).primaryColor,
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {},
+              onPressed: () {
+                Provider.of<Products>(context, listen: false)
+                    .deleteProducts(id);
+              },
               color: Theme.of(context).shadowColor,
             )
           ],

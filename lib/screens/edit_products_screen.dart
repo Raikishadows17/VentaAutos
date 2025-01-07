@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:storescars/providers/product.dart';
+import 'package:storescars/providers/products.dart';
+import 'package:provider/provider.dart';
 
 class EditProductsScreen extends StatefulWidget {
   const EditProductsScreen({super.key});
@@ -21,6 +24,31 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
   final _imageUrl01FocusNode = FocusNode();
   final _imageUrl02FocusNode = FocusNode();
   final _imageUrl03FocusNode = FocusNode();
+  final _form = GlobalKey<FormState>();
+
+  var _editedProduct = Product(
+      id: null,
+      title: '',
+      description: '',
+      km: 0,
+      price: '',
+      imageUrl01: '',
+      imageUrl02: '',
+      imageUrl03: '',
+      phone: '',
+      whatsapp: 0);
+  var _initValues = {
+    'title': '',
+    'price': '',
+    'description': '',
+    'km': '',
+    'phone': '',
+    'whatsapp': '',
+    'imageUrl01': '',
+    'imageUrl02': '',
+    'imageUrl03': ''
+  };
+  var _isInit = true;
 
   @override
   void initState() {
@@ -28,6 +56,30 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     _imageUrl02FocusNode.addListener(_updateImageUrl02);
     _imageUrl03FocusNode.addListener(_updateImageUrl03);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context)?.settings.arguments as String;
+      if (productId != null) {
+        _editedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
+        _initValues = {
+          'title': _editedProduct.title,
+          'price': _editedProduct.price,
+          'description': _editedProduct.description,
+          'km': _editedProduct.km.toString(),
+          'phone': _editedProduct.phone,
+          'whatsapp': _editedProduct.whatsapp.toString(),
+        };
+        _imageUrl01Controller.text = _editedProduct.imageUrl01;
+        _imageUrl02Controller.text = _editedProduct.imageUrl02;
+        _imageUrl03Controller.text = _editedProduct.imageUrl03;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -67,18 +119,38 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     }
   }
 
+  void _safeForm() {
+    _form.currentState?.save();
+    if (_editedProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id!, _editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
+
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _safeForm,
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
+          key: _form,
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _initValues['title'],
                 decoration: const InputDecoration(
                     labelText: 'Title',
                     labelStyle: TextStyle(color: Colors.black)),
@@ -86,9 +158,24 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
+                onSaved: (value) {
+                  _editedProduct = Product(
+                      id: _editedProduct.id,
+                      title: value ?? '',
+                      price: _editedProduct.price,
+                      description: _editedProduct.description,
+                      km: _editedProduct.km,
+                      phone: _editedProduct.phone,
+                      whatsapp: _editedProduct.whatsapp,
+                      imageUrl01: _editedProduct.imageUrl01,
+                      imageUrl02: _editedProduct.imageUrl02,
+                      imageUrl03: _editedProduct.imageUrl03,
+                      isFavorite: _editedProduct.isFavorite);
+                },
                 style: const TextStyle(color: Colors.black),
               ),
               TextFormField(
+                initialValue: _initValues['price'],
                 decoration: const InputDecoration(
                     labelText: 'Price',
                     labelStyle: TextStyle(color: Colors.black)),
@@ -99,8 +186,23 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+                onSaved: (value) {
+                  _editedProduct = Product(
+                      id: _editedProduct.id,
+                      title: _editedProduct.title,
+                      price: value ?? '',
+                      description: _editedProduct.description,
+                      km: _editedProduct.km,
+                      phone: _editedProduct.phone,
+                      whatsapp: _editedProduct.whatsapp,
+                      imageUrl01: _editedProduct.imageUrl01,
+                      imageUrl02: _editedProduct.imageUrl02,
+                      imageUrl03: _editedProduct.imageUrl03,
+                      isFavorite: _editedProduct.isFavorite);
+                },
               ),
               TextFormField(
+                initialValue: _initValues['description'],
                 decoration: InputDecoration(
                     labelText: 'Description',
                     labelStyle: TextStyle(color: Colors.black)),
@@ -111,8 +213,23 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_kmFocusNode);
                 },
+                onSaved: (value) {
+                  _editedProduct = Product(
+                      id: _editedProduct.id,
+                      title: _editedProduct.title,
+                      price: _editedProduct.price,
+                      description: value ?? '',
+                      km: _editedProduct.km,
+                      phone: _editedProduct.phone,
+                      whatsapp: _editedProduct.whatsapp,
+                      imageUrl01: _editedProduct.imageUrl01,
+                      imageUrl02: _editedProduct.imageUrl02,
+                      imageUrl03: _editedProduct.imageUrl03,
+                      isFavorite: _editedProduct.isFavorite);
+                },
               ),
               TextFormField(
+                initialValue: _initValues['km'],
                 decoration: InputDecoration(
                     labelText: 'Km',
                     labelStyle: TextStyle(color: Colors.black)),
@@ -123,8 +240,23 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_phoneFocusNode);
                 },
+                onSaved: (value) {
+                  _editedProduct = Product(
+                      id: _editedProduct.id,
+                      title: _editedProduct.title,
+                      price: _editedProduct.price,
+                      description: _editedProduct.description,
+                      km: int.parse(value!),
+                      phone: _editedProduct.phone,
+                      whatsapp: _editedProduct.whatsapp,
+                      imageUrl01: _editedProduct.imageUrl01,
+                      imageUrl02: _editedProduct.imageUrl02,
+                      imageUrl03: _editedProduct.imageUrl03,
+                      isFavorite: _editedProduct.isFavorite);
+                },
               ),
               TextFormField(
+                initialValue: _initValues['phone'],
                 decoration: InputDecoration(
                     labelText: 'Phone',
                     labelStyle: TextStyle(color: Colors.black)),
@@ -135,8 +267,23 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_whatsappFocusNode);
                 },
+                onSaved: (value) {
+                  _editedProduct = Product(
+                      id: _editedProduct.id,
+                      title: _editedProduct.title,
+                      price: _editedProduct.price,
+                      description: _editedProduct.description,
+                      km: _editedProduct.km,
+                      phone: value ?? '',
+                      whatsapp: _editedProduct.whatsapp,
+                      imageUrl01: _editedProduct.imageUrl01,
+                      imageUrl02: _editedProduct.imageUrl02,
+                      imageUrl03: _editedProduct.imageUrl03,
+                      isFavorite: _editedProduct.isFavorite);
+                },
               ),
               TextFormField(
+                initialValue: _initValues['whatsapp'],
                 decoration: InputDecoration(
                     labelText: 'Whatsapp',
                     labelStyle: TextStyle(color: Colors.black)),
@@ -144,6 +291,20 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 style: TextStyle(color: Colors.black),
                 keyboardType: TextInputType.number,
                 focusNode: _whatsappFocusNode,
+                onSaved: (value) {
+                  _editedProduct = Product(
+                      id: _editedProduct.id,
+                      title: _editedProduct.title,
+                      price: _editedProduct.price,
+                      description: _editedProduct.description,
+                      km: _editedProduct.km,
+                      phone: _editedProduct.phone,
+                      whatsapp: int.parse(value!),
+                      imageUrl01: _editedProduct.imageUrl01,
+                      imageUrl02: _editedProduct.imageUrl02,
+                      imageUrl03: _editedProduct.imageUrl03,
+                      isFavorite: _editedProduct.isFavorite);
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -174,6 +335,20 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       textInputAction: TextInputAction.done,
                       controller: _imageUrl01Controller,
                       focusNode: _imageUrl01FocusNode,
+                      onSaved: (value) {
+                        _editedProduct = Product(
+                            id: _editedProduct.id,
+                            title: _editedProduct.title,
+                            price: _editedProduct.price,
+                            description: _editedProduct.description,
+                            km: _editedProduct.km,
+                            phone: _editedProduct.phone,
+                            whatsapp: _editedProduct.whatsapp,
+                            imageUrl01: value ?? '',
+                            imageUrl02: _editedProduct.imageUrl02,
+                            imageUrl03: _editedProduct.imageUrl03,
+                            isFavorite: _editedProduct.isFavorite);
+                      },
                     ),
                   )
                 ],
@@ -207,6 +382,20 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       textInputAction: TextInputAction.done,
                       controller: _imageUrl02Controller,
                       focusNode: _imageUrl02FocusNode,
+                      onSaved: (value) {
+                        _editedProduct = Product(
+                            id: _editedProduct.id,
+                            title: _editedProduct.title,
+                            price: _editedProduct.price,
+                            description: _editedProduct.description,
+                            km: _editedProduct.km,
+                            phone: _editedProduct.phone,
+                            whatsapp: _editedProduct.whatsapp,
+                            imageUrl01: _editedProduct.imageUrl01,
+                            imageUrl02: value!,
+                            imageUrl03: _editedProduct.imageUrl03,
+                            isFavorite: _editedProduct.isFavorite);
+                      },
                     ),
                   )
                 ],
@@ -240,6 +429,23 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       textInputAction: TextInputAction.done,
                       controller: _imageUrl03Controller,
                       focusNode: _imageUrl03FocusNode,
+                      onFieldSubmitted: (_) {
+                        _safeForm();
+                      },
+                      onSaved: (value) {
+                        _editedProduct = Product(
+                            id: _editedProduct.id,
+                            title: _editedProduct.title,
+                            price: _editedProduct.price,
+                            description: _editedProduct.description,
+                            km: _editedProduct.km,
+                            phone: _editedProduct.phone,
+                            whatsapp: _editedProduct.whatsapp,
+                            imageUrl01: _editedProduct.imageUrl01,
+                            imageUrl02: _editedProduct.imageUrl02,
+                            imageUrl03: value ?? '',
+                            isFavorite: _editedProduct.isFavorite);
+                      },
                     ),
                   )
                 ],
